@@ -2,26 +2,6 @@
 
 The loopring smart contracts are a set of ethereum contracts that implement the loopring protocol. This document describes the functionnalities they provide and is structured as follows:
 
-- [Management of Orders](protocol.md#management-of-orders)
-	- [Anatomy of an Order](protocol.md#anatomy-of-an-order)
-	- [Full or Partial Cancellation](protocol.md#full-or-partial-cancellation)
-	- [Fill and Cancellation Tracking](protocol.md#fill-and-cancellation-tracking)
-- [Verification of Miner Supplied Data](protocol.md#verification-of-miner-supplied-data)
-	- [Order Ring](protocol.md#order-ring)
-	- [Order Ring Validation](protocol.md#order-ring-validation)
-		- [Sub-Loop Checking](protocol.md#sub-loop-checking)
-		- [Fill Rate Checing](protocol.md#fill-rate-checking)
-		- [Order Scaling](protocol.md#order-scaling)
-- [Ring settlement](protocol.md#ring-settlement)
-	- [Transactions](protocol.md#transactions)
-	- [Fee Model](protocol.md#fee-model)
-- [Emitted Events](protocol.md#emitted-events)
-- [Fraud and Attack Protections](protocol.md#fraud-and-attack-protections)
-	- [Ring Filch](protocol.md#ring-filch)
-	- [Denial of Service](protocol.md#denial-of-service)
-	- [Massive Tiny Order Attack](protocol.md#massive-tiny-order-attack)
-	- [Insufficient Balance](protocol.md#insufficient-balance)
-
 The code is open source and available on [github](https://github.com/Loopring/protocol).
 
 The Loopring Smart Contracts will be refered as `LSC` in this document. You can read more about the calculations and formulas used here in the [whitepaper](https://github.com/Loopring/whitepaper/raw/master/en_whitepaper.pdf) and supersimmetry's {[da447m@yahoo.com](mailto:da447m@yahoo.com)} [Remarks on Loopring](../pdf/supersimmetry-loopring-remark.pdf). Please be noted that in the current protocol implementation, the pricing model is the same as in our whitepaper and supersimmetry's document, but the fee model is different.
@@ -49,6 +29,8 @@ Relevant variables of an order's parameters (for a complete list of order parame
 | lrcFee | Max amount of LRC to pay to the miner |
 | marginSplitPercentage | The percentage of margin paid to the miner (when a better rate is found) |
 
+We called the above model **Unidirectional Order Model**, or UDOM for short. To learn more about UDOM, check out our [medium post](https://medium.com/@loopring/looprings-uni-directional-order-model-510067377fe9).
+
 The exchange rate `r` of the order is determined using the following formula `r = amountS/amountB`. When a miner does the ring-matching there is a possibility that he finds you a better rate that gets you more `tokenB` than the `amountB` you specified. But, if the `buyNoMoreThanAmountB` flag is set, the LSC will make sure that you still get exactly `amountB` of `tokenB`.
 
 > **Example**: with `amountS = 10` and `amountB = 2`, `r = 10/2 = 5`. This means that you are willing to sell `5 tokenS for each tokenB`. The miner does the ring-matching and `finds you a rate of 4`, topping the amount he could get you to `2.5 tokensB instead of 2`. You only wanted 2 tokensB and set the `buyNoMoreThanAmountB flag to true`. The LSC takes that into consideration and still makes the transaction at a rate of 4 and you ended up selling `4 tokenS for each tokenB`, effectively `saving 2 tokenS`. Keep in mind that this does not take into account the miner fees.
@@ -67,7 +49,7 @@ This section will talk about what the LSC expect to receive from the miners and 
 ### Order Ring
 The LSC expect to receive order rings from the miners. An order ring is multiple orders linked together in a way that allows them to be all matched at their desired exchange rate or better. See the diagram below as an example.
 
-![](../img/diagrams/order-ring.png)
+![](/img/diagrams/order-ring.png)
 
 Notice how each order's token to sell is the following order's token to buy. It creates a loop that allows each order to effectively sell and buy their desired tokens without having a matching order of the opposite pair.
 
@@ -86,7 +68,7 @@ This step prevents about [covered interest arbitrage](https://en.wikipedia.org/w
 This is considered as an unfair conduct from the miner in Loopring.
 
 The diagram bellow illustrates the previous valid ring where 2 orders were added.
-![](../img/diagrams/order-ring-sub-loop.png)
+![](/img/diagrams/order-ring-sub-loop.png)
 
 To prevent this, Loopring requires that **a valid loop cannot contain a sub-loop**. There is a very simple way to check this: a `token cannot be twice in a buy or sell position`. In the above diagram we can see that ARK is twice as a token to sell and twice as a token to buy.
 
@@ -124,7 +106,7 @@ When a user creates his order, he specifies a maximum of LRC to be paid to the m
 
 A representation of the margin split:
 
-![](../img/diagrams/margin-split.png)
+![](/img/diagrams/margin-split.png)
 
 If the miner decides that the margin on the ring is too small, he will choose the LRC fee. On the contrary if the margin is consequent enough for the resulting margin split to be worth more than the LRC fee, he will choose the margin split.
 
@@ -134,7 +116,7 @@ From the miner's point of view, this allows him to get a constant income on low 
 
 We end up with the following graph:
 
-![](../img/fee-model.png)
+![](/img/fee-model.png)
 
 - f is the LRC fee
 - x is the margin split
