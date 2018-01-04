@@ -2,26 +2,6 @@
 
 Loopringスマートコントラクトは、Loopringプロトコルを実装した一連のEthereumコントラクトです。このドキュメントでは、それらが提供する機能を下記の構成で説明します。
 
-- [注文の管理](protocol.md#注文の管理)
-	- [注文の詳細な分析](protocol.md#注文の詳細な分析)
-	- [完全または部分的なキャンセル](protocol.md#完全または部分的なキャンセル)
-	- [約定とキャンセルの追跡](protocol.md#約定とキャンセルの追跡)
-- [マイナーが提供するデータの検証](protocol.md#マイナーが提供するデータの検証)
-	- [注文リング](protocol.md#注文リング)
-	- [注文リングの検証](protocol.md#注文リングの検証)
-		- [サブループの確認](protocol.md#サブループの確認)
-		- [約定レート確認](protocol.md#約定レート確認)
-		- [注文スケーリング](protocol.md#注文スケーリング)
-- [リング決済](protocol.md#リング決済)
-	- [トランザクション](protocol.md#トランザクション)
-	- [手数料モデル](protocol.md#手数料モデル)
-- [発生イベント](protocol.md#発生イベント)
-- [詐欺と攻撃からの保護](protocol.md#詐欺と攻撃からの保護)
-	- [リングフィルチュ](protocol.md#リングフィルチュ)
-	- [サービスの拒否](protocol.md#サービスの拒否)
-	- [大規模な小型注文攻撃](protocol.md#大規模な小型注文攻撃)
-	- [残高不足](protocol.md#残高不足)
-
 コードはオープンソースで[GitHub](https://github.com/Loopring/protocol)から入手できます。
 
 このドキュメントでは、LoopringスマートコントラクトをLCSと言及します。[ホワイトペーパー](https://github.com/Loopring/whitepaper/raw/master/en_whitepaper.pdf)およびSupersimmetry氏{[da447m@yahoo.com](mailto:da447m@yahoo.com)}の[Loopringの所見](../pdf/supersimmetry-loopring-remark.pdf)で、ここで使用されている計算と数式に関してさらに読むことができます。現状のプロトコルの実装におけるプライシングモデルはホワイトペーパーおよびSupersimmetry氏のドキュメントと同様ですが、手数料モデルは異なるということに注意してください。
