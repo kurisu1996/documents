@@ -2,27 +2,27 @@
 
 Loopringスマートコントラクトは、Loopringプロトコルを実装した一連のEthereumコントラクトです。このドキュメントでは、それらが提供する機能を下記の構成で説明します。
 
-- [注文の管理](protocol.md#management-of-orders)
-	- [注文の詳細な分析](protocol.md#anatomy-of-an-order)
-	- [完全または部分的なキャンセル](protocol.md#full-or-partial-cancellation)
-	- [約定とキャンセルの追跡](protocol.md#fill-and-cancellation-tracking)
-- [マイナーが提供するデータの検証](protocol.md#verification-of-miner-supplied-data)
-	- [注文リング](protocol.md#order-ring)
-	- [注文リングの検証](protocol.md#order-ring-validation)
-		- [サブループの確認](protocol.md#sub-loop-checking)
-		- [約定レート確認](protocol.md#fill-rate-checking)
-		- [注文スケーリング](protocol.md#order-scaling)
-- [リング決済](protocol.md#ring-settlement)
-	- [トランザクション](protocol.md#transactions)
-	- [手数料モデル](protocol.md#fee-model)
-- [発生イベント](protocol.md#emitted-events)
-- [詐欺と攻撃からの保護](protocol.md#fraud-and-attack-protections)
-	- [リングフィルチュ](protocol.md#ring-filch)
-	- [サービスの拒否](protocol.md#denial-of-service)
-	- [大規模な小型注文攻撃](protocol.md#massive-tiny-order-attack)
-	- [残高不足](protocol.md#insufficient-balance)
+- [注文の管理](protocol.md#注文の管理)
+	- [注文の詳細な分析](protocol.md#注文の詳細な分析)
+	- [完全または部分的なキャンセル](protocol.md#完全または部分的なキャンセル)
+	- [約定とキャンセルの追跡](protocol.md#約定とキャンセルの追跡)
+- [マイナーが提供するデータの検証](protocol.md#マイナーが提供するデータの検証)
+	- [注文リング](protocol.md#注文リング)
+	- [注文リングの検証](protocol.md#注文リングの検証)
+		- [サブループの確認](protocol.md#サブループの確認)
+		- [約定レート確認](protocol.md#約定レート確認)
+		- [注文スケーリング](protocol.md#注文スケーリング)
+- [リング決済](protocol.md#リング決済)
+	- [トランザクション](protocol.md#トランザクション)
+	- [手数料モデル](protocol.md#手数料モデル)
+- [発生イベント](protocol.md#発生イベント)
+- [詐欺と攻撃からの保護](protocol.md#詐欺と攻撃からの保護)
+	- [リングフィルチュ](protocol.md#リングフィルチュ)
+	- [サービスの拒否](protocol.md#サービスの拒否)
+	- [大規模な小型注文攻撃](protocol.md#大規模な小型注文攻撃)
+	- [残高不足](protocol.md#残高不足)
 
-コードはオープンソースで[github](https://github.com/Loopring/protocol)から入手できます。
+コードはオープンソースで[GitHub](https://github.com/Loopring/protocol)から入手できます。
 
 このドキュメントでは、LoopringスマートコントラクトをLCSと言及します。[ホワイトペーパー](https://github.com/Loopring/whitepaper/raw/master/en_whitepaper.pdf)およびSupersimmetry氏{[da447m@yahoo.com](mailto:da447m@yahoo.com)}の[Loopringの所見](../pdf/supersimmetry-loopring-remark.pdf)で、ここで使用されている計算と数式に関してさらに読むことができます。現状のプロトコルの実装におけるプライシングモデルはホワイトペーパーおよびSupersimmetry氏のドキュメントと同様ですが、手数料モデルは異なるということに注意してください。
 
@@ -33,7 +33,7 @@ LSCの機能を理解するために、まずは注文の定義、ユーザー�
 注文とは、マーケットでのユーザーの意図を記述するデータの集まりです。注文の出どころを保証するため、ユーザーのプライベートキーを使って、`注文パラメータのハッシュで署名されます`。署名はネットワーク上の注文に沿って送信されます。これは、送信者のアドレスを検証するために、注文がライフタイムにわたり`不変`のままにすることを必要とします。<br/>
 `Signature = ECDSA(SHA3(order_params))`
 
-注文が決して変更されない場合でも、LSCは[現在の状態を計算する](protocol.md#transactions)ことが可能です。
+注文が決して変更されない場合でも、LSCは[現在の状態を計算する](protocol.md#トランザクション)ことが可能です。
 
 注文のパラメータに関連する変数(注文のパラメータの完全な一覧は、[コード](https://github.com/Loopring/protocol/blob/ef5290d59daa7be4eee450b215d6a50ca9d3492d/contracts/LoopringProtocol.sol#L39)を参照してください)：
 
@@ -61,7 +61,7 @@ LSCの機能を理解するために、まずは注文の定義、ユーザー�
 ### 約定とキャンセルの追跡
 LSCは、注文のハッシュを識別子として使用し、その値を格納することで、約定およびキャンセルの金額を追跡し続けます。このデータは一般にアクセス可能で、データ変更時に`OrderCancelled` / `OrderFilled`イベントが発行されます。
 
-この追跡は、[リング決済](protocol.md#ring-settlement)のステップでのLSCに役立ちます。
+この追跡は、[リング決済](protocol.md#リング決済)のステップでのLSCに役立ちます。
 
 ## マイナーが提供するデータの検証
 このセクションでは、LSCがマイナーから受け取る予定のものと、データを検証するために取られるステップについて説明します。
